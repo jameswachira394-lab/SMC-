@@ -125,15 +125,67 @@ New Candle Close
 
 ## Usage
 
+### Backtesting
+
 ```bash
 # Install dependencies
-pip install pandas numpy
+pip install -r requirements.txt
 
-# Run backtest on sample/custom OHLCV CSV
-python main.py --data data/sample.csv --timeframe 15m
+# Run backtest on sample data
+python main.py --generate-sample
+
+# Run backtest on custom OHLCV CSV
+python main.py --data data/sample.csv
 
 # Run with HTF bias
 python main.py --data data/eurusd_15m.csv --htf data/eurusd_1h.csv
 ```
 
-Output: `output/backtest_report.json` + `output/trades.csv`
+Output: `output/backtest_report.json` + `output/trades.csv` + `output/equity_curve.csv`
+
+### Live Trading on MetaTrader5
+
+```bash
+# Install MT5 package
+pip install MetaTrader5
+
+# Run live trading (configure credentials first)
+python main.py --mode live \
+    --login YOUR_LOGIN \
+    --password YOUR_PASSWORD \
+    --server "ICMarketsSC-Demo" \
+    --symbol EURUSD \
+    --timeframe 60 \
+    --lot-size 0.1
+```
+
+**Important:** Test with a demo account first! See [MT5_INTEGRATION.md](MT5_INTEGRATION.md) for detailed setup.
+
+---
+
+## Live Trading Features
+
+✅ **Real-time Signal Detection**
+- Fetch candles from MT5 every N seconds
+- Run SMC engines on live market data
+- Execute trades automatically when conditions align
+
+✅ **Order Management**
+- Automatic SL/TP placement from SMC logic
+- Position sizing based on risk management rules
+- Partial take profit at 1R (configurable)
+
+✅ **Risk Controls**
+- Daily loss limits (default 3% of account)
+- Max consecutive losses halt (default 4 trades)
+- Risk-per-trade percentage (default 1%)
+
+✅ **Safety Features**
+- Magic number for trade identification
+- Automatic reconnect on MT5 disconnect
+- Session filter (London/NY hours only)
+- Real-time P&L monitoring
+
+See [MT5_INTEGRATION.md](MT5_INTEGRATION.md) for comprehensive setup and API documentation.
+
+---

@@ -49,3 +49,14 @@ PARTIAL_TP_PCT = 0.5              # Close 50% of position at partial TP
 # ── Consolidation Filter ──────────────────────────────────────────────────────
 CONSOLIDATION_ATR_MULT = 0.5      # If range < this × ATR over N bars → no trade
 CONSOLIDATION_LOOKBACK = 10
+
+# ── MT5 Live Trading ──────────────────────────────────────────────────────────
+# Configure these to enable live trading mode
+MT5_LOGIN = None                  # Your MT5 account login (e.g., 123456789)
+MT5_PASSWORD = None               # Your MT5 account password
+MT5_SERVER = "ICMarketsSC-Demo"   # Demo: "ICMarketsSC-Demo" | Live: "ICMarkets-Live"
+MT5_SYMBOL = "EURUSD"             # Trading pair
+MT5_TIMEFRAME = 60                # Timeframe in minutes (60 = 1H, 240 = 4H, etc)
+MT5_MAGIC_NUMBER = 123456         # Unique identifier for orders placed by this system
+MT5_LOT_SIZE = 0.1                # Fixed lot size for live trading
+MT5_CHECK_INTERVAL = 60           # Seconds between candle checks

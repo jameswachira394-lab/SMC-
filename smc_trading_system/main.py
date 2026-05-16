@@ -110,15 +110,47 @@ def generate_sample_data(n: int = 2000, path: str = "data/sample.csv"):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="SMC Non-Repainting Trading System Backtest"
+        description="SMC Non-Repainting Trading System (Backtest & Live)"
     )
+    
+    # Mode selection
+    parser.add_argument("--mode", choices=["backtest", "live"], default="backtest",
+                        help="Run mode: backtest or live trading")
+    
+    # Backtest arguments
     parser.add_argument("--data",            help="Path to OHLCV CSV (LTF)")
     parser.add_argument("--htf",             help="Path to HTF OHLCV CSV (optional bias)")
     parser.add_argument("--output",          default="output", help="Output directory")
     parser.add_argument("--generate-sample", action="store_true",
                         help="Generate synthetic sample data and run on it")
+    
+    # Live trading arguments
+    parser.add_argument("--login",           type=int, help="MT5 account login")
+    parser.add_argument("--password",        help="MT5 account password")
+    parser.add_argument("--server",          help="MT5 server name")
+    parser.add_argument("--symbol",          help="Trading pair (e.g., EURUSD)")
+    parser.add_argument("--timeframe",       type=int, default=60,
+                        help="Timeframe in minutes (60=1H, 240=4H, etc)")
+    parser.add_argument("--lot-size",        type=float, default=0.1,
+                        help="Position size in lots")
+    parser.add_argument("--interval",        type=int, default=60,
+                        help="Seconds between candle checks")
+    parser.add_argument("--duration",        type=int, default=24,
+                        help="Maximum trading duration in hours")
+    
     args = parser.parse_args()
 
+    # ── BACKTEST MODE ──────────────────────────────────────────────────────
+    if args.mode == "backtest":
+        run_backtest(args)
+
+    # ── LIVE TRADING MODE ──────────────────────────────────────────────────
+    elif args.mode == "live":
+        run_live_trading(args)
+
+
+def run_backtest(args):
+    """Execute backtest mode."""
     # ── Generate sample if requested ─────────────────────────────────────────
     if args.generate_sample or not args.data:
         sample_path = generate_sample_data(n=3000)
@@ -147,6 +179,60 @@ def main():
     # ── Report ────────────────────────────────────────────────────────────────
     reporter = BacktestReporter(output_dir=args.output)
     reporter.generate(trades, sim.equity_curve)
+
+
+def run_live_trading(args):
+    """Execute live trading mode."""
+    from integrations.mt5_connector import MT5Connector
+    from backtest.live_engine import LiveTradingEngine
+    from config.settings import (
+        MT5_LOGIN, MT5_PASSWORD, MT5_SERVER, MT5_SYMBOL, 
+        MT5_TIMEFRAME, MT5_MAGIC_NUMBER, MT5_LOT_SIZE, MT5_CHECK_INTERVAL
+    )
+    
+    # Use CLI args if provided, otherwise use config
+    login = args.login or MT5_LOGIN
+    password = args.password or MT5_PASSWORD
+    server = args.server or MT5_SERVER
+    symbol = args.symbol or MT5_SYMBOL
+    timeframe = args.timeframe or MT5_TIMEFRAME
+    lot_size = args.lot_size or MT5_LOT_SIZE
+    magic = 123456  # Can be made configurable
+    interval = args.interval or MT5_CHECK_INTERVAL
+    duration = args.duration or 24
+    
+    # Validate MT5 credentials
+    if not login or not password or not server:
+        print("[Main] ERROR: MT5 credentials required")
+        print("  Usage: python main.py --mode live --login YOUR_LOGIN --password YOUR_PASS --server YOUR_SERVER")
+        print("  Or set MT5_LOGIN, MT5_PASSWORD, MT5_SERVER in config/settings.py")
+        sys.exit(1)
+    
+    print(f"[Main] Starting live trading mode")
+    print(f"[Main] Symbol: {symbol} | Timeframe: {timeframe}m")
+    
+    # Connect to MT5
+    connector = MT5Connector(login, password, server)
+    if not connector.connect():
+        print("[Main] Failed to connect to MT5")
+        sys.exit(1)
+    
+    # Create and run live engine
+    engine = LiveTradingEngine(
+        connector,
+        symbol=symbol,
+        timeframe=timeframe,
+        lot_size=lot_size,
+        magic_number=magic,
+    )
+    
+    try:
+        engine.run(check_interval=interval, max_duration_hours=duration)
+        engine.report()
+    except Exception as e:
+        print(f"[Main] Live trading error: {e}")
+        connector.disconnect()
+        sys.exit(1)
 
 
 if __name__ == "__main__":
