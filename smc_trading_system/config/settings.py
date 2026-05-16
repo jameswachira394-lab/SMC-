@@ -53,8 +53,8 @@ CONSOLIDATION_LOOKBACK = 10
 # ── MT5 Live Trading ──────────────────────────────────────────────────────────
 # Configure these to enable live trading mode
 MT5_LOGIN = 2001974239                 # Your MT5 account login (e.g., 123456789)
-MT5_PASSWORD = James@8080               # Your MT5 account password
-MT5_SERVER = "JustMarkets-Demo"   # Demo: "ICMarketsSC-Demo" | Live: "ICMarkets-Live"
+MT5_PASSWORD = "James@8080"             # Your MT5 account password
+MT5_SERVER = "JustMarkets-Demo"         # Demo: "ICMarketsSC-Demo" | Live: "ICMarkets-Live"
 MT5_SYMBOL = "XAUUSD"             # Trading pair
 MT5_TIMEFRAME = 5                # Timeframe in minutes (60 = 1H, 240 = 4H, etc)
 MT5_MAGIC_NUMBER = 123456         # Unique identifier for orders placed by this system
