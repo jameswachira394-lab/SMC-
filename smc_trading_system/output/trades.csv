@@ -1,0 +1,2 @@
+direction,entry_price,stop_loss,take_profit,position_size,entry_time,exit_time,exit_price,exit_type,pnl_r,rr_ratio,reason,session
+long,1.11872,1.1008136515247113,1.1545326969505771,5584.611521327397,2023-01-04 07:30:00,2023-01-06 19:45:00,1.1008136515247113,SL_HIT,-1.0,2.0,LONG confluence @ FVG[Bull 1.11722-1.11752 untouched],New York

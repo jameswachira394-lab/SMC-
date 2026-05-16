@@ -1,0 +1,47 @@
+{
+  "summary": {
+    "total_trades": 1,
+    "wins": 0,
+    "losses": 1,
+    "win_rate_pct": 0.0,
+    "avg_win_r": 0,
+    "avg_loss_r": -1.0,
+    "expectancy_r": -1.0,
+    "total_r": -1.0,
+    "best_trade_r": -1.0,
+    "worst_trade_r": -1.0,
+    "profit_factor": 0.0
+  },
+  "drawdown": {
+    "max_drawdown_pct": 1.0,
+    "final_balance": 9949.5,
+    "net_pnl_pct": -0.51
+  },
+  "rr_distribution": {
+    "-1R (SL)": 1
+  },
+  "session_breakdown": {
+    "New York": {
+      "trades": 1,
+      "wins": 0,
+      "total_r": -1.0,
+      "win_rate_pct": 0.0
+    }
+  },
+  "direction_breakdown": {
+    "longs": {
+      "count": 1,
+      "win_rate": 0.0,
+      "total_r": -1.0
+    },
+    "shorts": {
+      "count": 0,
+      "win_rate": 0,
+      "total_r": 0
+    }
+  },
+  "streaks": {
+    "max_consecutive_wins": 0,
+    "max_consecutive_losses": 1
+  }
+}
